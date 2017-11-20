@@ -350,6 +350,42 @@ public class DateTest {
 		testCall(db, "RETURN apoc.date.add($firstOf2017ms, 'ms', -5, 'd') as firstOf2017Minus5days", params, row -> assertEquals(firstOf2017Minus5Daysms, row.get("firstOf2017Minus5days")));
 	}
 
+	@Test
+	public void testAddYear() throws Exception {
+		Long firstOf2017ms = 1483228800000l;
+		Long firstOf2017Plus5Yearsms = 1640995200000l;
+		Map<String, Object> params = new HashMap<>();
+		params.put("firstOf2017ms", firstOf2017ms);
+		testCall(db, "RETURN apoc.date.add($firstOf2017ms, 'ms', 5, 'year') as firstOf2017Plus5years", params, row -> assertEquals(firstOf2017Plus5Yearsms, row.get("firstOf2017Plus5years")));
+	}
+
+	@Test
+	public void testAddNegativeYear() throws Exception {
+		Long firstOf2017ms = 1483228800000l;
+		Long firstOf2017Minus5Yearsms = 1325376000000l;
+		Map<String, Object> params = new HashMap<>();
+		params.put("firstOf2017ms", firstOf2017ms);
+		testCall(db, "RETURN apoc.date.add($firstOf2017ms, 'ms', -5, 'year') as firstOf2017Minus5years", params, row -> assertEquals(firstOf2017Minus5Yearsms, row.get("firstOf2017Minus5years")));
+	}
+
+	@Test
+	public void testAddMonth() throws Exception {
+		Long firstOf2017ms = 1483228800000l;
+		Long firstOf2017Plus5Monthsms = 1496271600000l;
+		Map<String, Object> params = new HashMap<>();
+		params.put("firstOf2017ms", firstOf2017ms);
+		testCall(db, "RETURN apoc.date.add($firstOf2017ms, 'ms', 5, 'month') as firstOf2017Plus5months", params, row -> assertEquals(firstOf2017Plus5Monthsms, row.get("firstOf2017Plus5months")));
+	}
+
+	@Test
+	public void testAddNegativeMonth() throws Exception {
+		Long firstOf2017ms = 1483228800000l;
+		Long firstOf2017Minus5Monthsms = 1470006000000l;
+		Map<String, Object> params = new HashMap<>();
+		params.put("firstOf2017ms", firstOf2017ms);
+		testCall(db, "RETURN apoc.date.add($firstOf2017ms, 'ms', -5, 'month') as firstOf2017Minus5months", params, row -> assertEquals(firstOf2017Minus5Monthsms, row.get("firstOf2017Minus5months")));
+	}
+
 	private SimpleDateFormat formatInUtcZone(final String pattern) {
 		SimpleDateFormat customFormat = new SimpleDateFormat(pattern);
 		customFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

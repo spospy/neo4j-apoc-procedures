@@ -176,12 +176,38 @@ public class Date {
 	@UserFunction
 	@Description("apoc.date.add(12345, 'ms', -365, 'd') given a timestamp in one time unit, adds a value of the specified time unit")
 	public Long add(@Name("time") long time, @Name(value = "unit") String unit, @Name(value = "addValue") long addValue, @Name(value = "addUnit") String addUnit) {
-		long valueToAdd = unit(unit).convert(addValue, unit(addUnit));
+		long valueToAdd;
+		if (isYearDateUnit(addUnit) || isMonthDateUnit(addUnit)) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(unit(unit).convert(time, unit(unit)));
+			calendar.add(getCalendarUnit(addUnit), (int) addValue);
+			return calendar.getTimeInMillis();
+		} else {
+			valueToAdd = unit(unit).convert(addValue, unit(addUnit));
+		}
 		return time + valueToAdd;
 	}
 
 	public String parse(final @Name("millis") long millis, final @Name(value = "pattern", defaultValue = DEFAULT_FORMAT) String pattern, final @Name("timezone") String timezone) {
 		return getFormat(pattern, timezone).format(new java.util.Date(millis));
+	}
+
+ 	private boolean isYearDateUnit(String dateUnit) {
+		return dateUnit.equals("year") || dateUnit.equals("years");
+	}
+
+	private boolean isMonthDateUnit(String dateUnit) {
+		return dateUnit.equals("month") || dateUnit.equals("months");
+	}
+
+	private Integer getCalendarUnit(String dateUnit) {
+		Integer calendarUnit = null;
+		if (isYearDateUnit(dateUnit)) {
+			calendarUnit = Calendar.YEAR;
+		} else if (isMonthDateUnit(dateUnit)) {
+			calendarUnit = Calendar.MONTH;
+		}
+		return calendarUnit;
 	}
 
 	private static DateFormat getFormat(final String pattern, final String timezone) {
